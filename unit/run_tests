@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# If $METHOD is not set, use opt
+if [ -z $METHOD ]; then
+  export METHOD=opt
+fi
+
+if [ -e ./unit/air-unit-$METHOD ]
+then
+  ./unit/air-unit-$METHOD
+elif [ -e ./air-unit-$METHOD ]
+then
+  ./air-unit-$METHOD
+else
+  echo "Executable missing!"
+  exit 1
+fi
