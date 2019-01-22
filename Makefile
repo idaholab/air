@@ -23,7 +23,7 @@ endif
 FRAMEWORK_DIR      ?= $(MOOSE_DIR)/framework
 ###############################################################################
 CURRENT_DIR        := $(shell pwd)
-AIR_DIR            ?= $(CURRENT_DIR)
+AIR_DIR        ?= $(CURRENT_DIR)
 
 # moose submodule status
 moose_status := $(shell git -C $(AIR_DIR) submodule status 2>/dev/null | grep moose | cut -c1)
@@ -46,6 +46,8 @@ include $(FRAMEWORK_DIR)/moose.mk
 FLUID_PROPERTIES  := yes
 include $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
+
+include libSBTL_Air.mk
 
 # dep apps
 APPLICATION_DIR    := $(CURRENT_DIR)

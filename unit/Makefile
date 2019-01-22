@@ -8,7 +8,7 @@
 # FRAMEWORK_DIR    - Location of the MOOSE framework
 #
 ###############################################################################
-AIR_DIR            ?= $(shell dirname `pwd`)
+AIR_DIR        ?= $(shell dirname `pwd`)
 MOOSE_SUBMODULE    := $(AIR_DIR)/moose
 ifneq ($(wildcard $(MOOSE_SUBMODULE)/framework/Makefile),)
   MOOSE_DIR        ?= $(MOOSE_SUBMODULE)
@@ -38,6 +38,8 @@ FLUID_PROPERTIES  := yes
 include           $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
 
+include $(AIR_DIR)/libSBTL_Air.mk
+
 # dep apps
 APPLICATION_DIR    := $(AIR_DIR)
 APPLICATION_NAME   := air
@@ -50,7 +52,7 @@ app_BASE_DIR       :=      # Intentionally blank
 DEP_APPS           ?= $(shell $(FRAMEWORK_DIR)/scripts/find_dep_apps.py $(APPLICATION_NAME))
 include $(FRAMEWORK_DIR)/app.mk
 
-# Find all the air unit test source files and include their dependencies.
+# Find all the Air unit test source files and include their dependencies.
 air-unit_srcfiles := $(shell find $(CURRENT_DIR) -name "*.C")
 air-unit_deps := $(patsubst %.C, %.$(obj-suffix).d, $(air-unit_srcfiles))
 -include $(air-unit_deps)
