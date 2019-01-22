@@ -5,7 +5,7 @@
 #include "MooseApp.h"
 #include "AirApp.h"
 
-PerfLog Moose::perf_log("gtest");
+PerfLog Moose::perf_log("air_unit");
 
 int my_argc;
 char ** my_argv;
