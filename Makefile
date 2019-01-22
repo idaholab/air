@@ -23,7 +23,7 @@ endif
 FRAMEWORK_DIR      ?= $(MOOSE_DIR)/framework
 ###############################################################################
 CURRENT_DIR        := $(shell pwd)
-AIR_DIR        ?= $(CURRENT_DIR)
+AIR_DIR            ?= $(CURRENT_DIR)
 
 # moose submodule status
 moose_status := $(shell git -C $(AIR_DIR) submodule status 2>/dev/null | grep moose | cut -c1)
