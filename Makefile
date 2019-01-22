@@ -47,6 +47,8 @@ FLUID_PROPERTIES  := yes
 include $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
 
+include libSBTL_Air.mk
+
 # dep apps
 APPLICATION_DIR    := $(CURRENT_DIR)
 APPLICATION_NAME   := air
