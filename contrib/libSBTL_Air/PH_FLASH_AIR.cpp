@@ -93,7 +93,7 @@ SBTLAPI void __stdcall PH_FLASH_DERIV_AIR(double p, double v, double vt, double 
     dpdh_u=-dudh_p/dudp_h;
 }
 //
-SBTLAPI void __stdcall PH_T_FLASH_DERIV_G(double p, double v, double vt, double u, double& t, double& dtdp_h, double& dtdh_p, double& dpdh_t) throw()
+SBTLAPI void __stdcall PH_T_FLASH_DERIV_G_AIR(double p, double v, double vt, double u, double& t, double& dtdp_h, double& dtdh_p, double& dpdh_t) throw()
 {
     double dhdv_u, dhdu_v;
     double dpdv_u, dpdu_v, dudv_p;
