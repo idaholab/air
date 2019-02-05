@@ -44,7 +44,7 @@ $(app_EXEC): $(LIBSBTL_AIR_LIB)
 
 -include $(LIBSBTL_AIR_deps)
 
-cleanlibsbtl_nitrogen:
+cleanlibsbtl_air:
 	@echo "Cleaning libSBTL_Air"
 	@rm -f $(LIBSBTL_AIR_objects)
 	@rm -f $(LIBSBTL_AIR_deps)
