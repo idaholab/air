@@ -74,7 +74,7 @@ public:
   virtual void p_from_h_s(Real h, Real s, Real & p, Real & dp_dh, Real & dp_ds) const override;
   virtual Real g_from_v_e(Real v, Real e) const override;
   virtual Real beta_from_p_T(Real p, Real T) const override;
-  virtual void beta_from_p_T(Real p, Real T, Real & beta, Real & dbeta_dp, Real & dbeta_dT) const;
+  virtual void beta_from_p_T(Real p, Real T, Real & beta, Real & dbeta_dp, Real & dbeta_dT) const override;
   virtual Real molarMass() const override;
 
 protected:
