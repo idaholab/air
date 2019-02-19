@@ -26,6 +26,9 @@ class AirSBTLFluidProperties : public SinglePhaseFluidProperties, public NaNInte
 public:
   AirSBTLFluidProperties(const InputParameters & parameters);
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
+
   virtual Real p_from_v_e(Real v, Real e) const override;
   virtual void p_from_v_e(Real v, Real e, Real & p, Real & dp_dv, Real & dp_de) const override;
   virtual Real T_from_v_e(Real v, Real e) const override;
@@ -74,8 +77,11 @@ public:
   virtual void p_from_h_s(Real h, Real s, Real & p, Real & dp_dh, Real & dp_ds) const override;
   virtual Real g_from_v_e(Real v, Real e) const override;
   virtual Real beta_from_p_T(Real p, Real T) const override;
-  virtual void beta_from_p_T(Real p, Real T, Real & beta, Real & dbeta_dp, Real & dbeta_dT) const override;
+  virtual void
+  beta_from_p_T(Real p, Real T, Real & beta, Real & dbeta_dp, Real & dbeta_dT) const override;
   virtual Real molarMass() const override;
+
+#pragma GCC diagnostic pop
 
 protected:
   /// Conversion factor from Pa to MPa
