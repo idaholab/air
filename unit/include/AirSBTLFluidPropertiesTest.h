@@ -1,5 +1,4 @@
-#ifndef AIRSBTLFLUIDPROPERTIESTEST_H
-#define AIRSBTLFLUIDPROPERTIESTEST_H
+#pragma once
 
 #include "MooseObjectUnitTest.h"
 #include "AirSBTLFluidProperties.h"
@@ -19,5 +18,3 @@ protected:
 
   const AirSBTLFluidProperties * _fp;
 };
-
-#endif
