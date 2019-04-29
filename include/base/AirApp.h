@@ -1,5 +1,4 @@
-#ifndef AIRAPP_H
-#define AIRAPP_H
+#pragma once
 
 #include "MooseApp.h"
 
@@ -19,5 +18,3 @@ public:
 
 protected:
 };
-
-#endif /* AIRAPP_H */
