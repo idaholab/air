@@ -11,6 +11,13 @@ InputParameters validParams<AirSBTLFluidProperties>();
 /**
  * Properties of air according to Lemmon et al. computed with the SBTL method
  *
+ * Range of validity:
+ *   0.0005 MPa <= p <= 100 MPa
+ *   250 K <= T <= 1300 K
+ *
+ * In this domain, air is always in a gaseous state.
+ *
+ *
  * The following are the units used in libSBTL:
  * - pressure:           MPa
  * - temperature:        K
