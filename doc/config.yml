@@ -1,15 +1,19 @@
 Content:
     air:
         root_dir: doc/content
+    framework:
+        root_dir: ${MOOSE_DIR}/framework/doc/content
+    fluid_properties:
+        root_dir: ${MOOSE_DIR}/modules/fluid_properties/doc/content
 
 Renderer:
     type: MooseDocs.base.MaterializeRenderer
-    name: air
-    repo: https://hpcgitlab.hpc.inl.gov/idaholab/air
-    home: https://hpcsc.inl.gov/ssl/AIR/site/index.html
 
 Extensions:
     MooseDocs.extensions.navigation:
+        name: air
+        repo: https://hpcgitlab.hpc.inl.gov/idaholab/air
+        home: https://hpcsc.inl.gov/ssl/AIR/site/index.html
         menu:
             Developers:
                 Workflow: workflow.md
