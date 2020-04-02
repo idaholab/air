@@ -54,6 +54,7 @@ TEST_F(AirSBTLFluidPropertiesTest, test)
   const Real cp = _fp->cp_from_v_e(v, e);
   // TODO: REL_TEST(cp, cp_external, REL_TOL_EXTERNAL_VALUE);
   REL_TEST(cp, 1013.3795339037777, REL_TOL_SAVED_VALUE);
+  DERIV_TEST(_fp->cp_from_v_e, v, e, REL_TOL_DERIVATIVE);
   REL_TEST(_fp->cp_from_p_T(p, T), 1013.3795339037777, REL_TOL_SAVED_VALUE);
 
   // cv
@@ -63,10 +64,15 @@ TEST_F(AirSBTLFluidPropertiesTest, test)
   REL_TEST(_fp->cv_from_p_T(p, T), 725.57903095165773, REL_TOL_SAVED_VALUE);
 
   // mu
-  const Real mu = _fp->mu_from_v_e(v, e);
+  Real mu = _fp->mu_from_v_e(v, e);
   // TODO: REL_TEST(mu, mu_external, REL_TOL_EXTERNAL_VALUE);
   REL_TEST(mu, 0.000022763142836965456, REL_TOL_SAVED_VALUE);
   REL_TEST(_fp->mu_from_p_T(p, T), 0.000022763142836965456, REL_TOL_SAVED_VALUE);
+  Real dmu_dv, dmu_de;
+  _fp->mu_from_v_e(v, e, mu, dmu_dv, dmu_de);
+  REL_TEST(mu, 0.000022763142836965456, REL_TOL_SAVED_VALUE);
+  REL_TEST(dmu_dv, 0., REL_TOL_SAVED_VALUE);
+  REL_TEST(dmu_de, 0., REL_TOL_SAVED_VALUE);
 
   // k
   const Real k = _fp->k_from_v_e(v, e);
