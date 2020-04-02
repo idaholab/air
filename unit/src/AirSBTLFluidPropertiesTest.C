@@ -54,6 +54,7 @@ TEST_F(AirSBTLFluidPropertiesTest, test)
   const Real cp = _fp->cp_from_v_e(v, e);
   // TODO: REL_TEST(cp, cp_external, REL_TOL_EXTERNAL_VALUE);
   REL_TEST(cp, 1013.3795339037777, REL_TOL_SAVED_VALUE);
+  DERIV_TEST(_fp->cp_from_v_e, v, e, REL_TOL_DERIVATIVE);
   REL_TEST(_fp->cp_from_p_T(p, T), 1013.3795339037777, REL_TOL_SAVED_VALUE);
 
   // cv
