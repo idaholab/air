@@ -205,6 +205,15 @@ AirSBTLFluidProperties::mu_from_v_e(Real v, Real e) const
   return ETA_VU_AIR(v, e * _to_kJ);
 }
 
+void
+AirSBTLFluidProperties::mu_from_v_e(Real v, Real e, Real & mu, Real & dmu_dv, Real & dmu_de) const
+{
+  mu = mu_from_v_e(v, e);
+  // currently zero, becuase the underlying SBTL package has no API for it
+  dmu_dv = 0;
+  dmu_de = 0;
+}
+
 Real
 AirSBTLFluidProperties::k_from_v_e(Real v, Real e) const
 {
