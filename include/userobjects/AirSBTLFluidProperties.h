@@ -3,11 +3,6 @@
 #include "SinglePhaseFluidProperties.h"
 #include "NaNInterface.h"
 
-class AirSBTLFluidProperties;
-
-template <>
-InputParameters validParams<AirSBTLFluidProperties>();
-
 /**
  * Properties of air according to Lemmon et al. computed with the SBTL method
  *
@@ -99,4 +94,7 @@ protected:
   const Real _to_kJ;
   /// Conversion factor from kJ to J
   const Real _to_J;
+
+public:
+  static InputParameters validParams();
 };
