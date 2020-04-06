@@ -74,12 +74,11 @@ extern "C" void DIFF_CP_VU_AIR_T(
 
 registerMooseObject("AirApp", AirSBTLFluidProperties);
 
-template <>
 InputParameters
-validParams<AirSBTLFluidProperties>()
+AirSBTLFluidProperties::validParams()
 {
-  InputParameters params = validParams<SinglePhaseFluidProperties>();
-  params += validParams<NaNInterface>();
+  InputParameters params = SinglePhaseFluidProperties::validParams();
+  params += NaNInterface::validParams();
   params.addClassDescription("Fluid properties of air (gas phase).");
   return params;
 }
