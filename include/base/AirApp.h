@@ -3,10 +3,6 @@
 #include "MooseApp.h"
 
 class Factory;
-class AirApp;
-
-template <>
-InputParameters validParams<AirApp>();
 
 class AirApp : public MooseApp
 {
@@ -17,4 +13,6 @@ public:
   static void registerAll(Factory & f, ActionFactory & af, Syntax & s);
 
 protected:
+public:
+  static InputParameters validParams();
 };
