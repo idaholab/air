@@ -13,7 +13,7 @@ protected:
   {
     InputParameters uo_pars = _factory.getValidParams("AirSBTLFluidProperties");
     _fe_problem->addUserObject("AirSBTLFluidProperties", "fp", uo_pars);
-    _fp = &_fe_problem->getUserObjectTempl<AirSBTLFluidProperties>("fp");
+    _fp = &_fe_problem->getUserObject<AirSBTLFluidProperties>("fp");
   }
 
   const AirSBTLFluidProperties * _fp;
