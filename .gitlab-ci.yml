@@ -1,0 +1,11 @@
+pages:
+  stage: deploy
+  script:
+    - mkdir .public
+    - echo "<html><head><title>Home</title></head><body><h1>Hello World!</h1></body></html>" > .public
+    - mv .public public
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
