@@ -13,7 +13,6 @@ Extensions:
     MooseDocs.extensions.navigation:
         name: air
         repo: https://hpcgitlab.hpc.inl.gov/idaholab/air
-        home: https://hpcsc.inl.gov/ssl/AIR/site/index.html
         menu:
             Developers:
                 Workflow: workflow.md
