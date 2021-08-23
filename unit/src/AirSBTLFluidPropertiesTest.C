@@ -62,6 +62,7 @@ TEST_F(AirSBTLFluidPropertiesTest, test)
   // TODO: REL_TEST(cv, cv_external, REL_TOL_EXTERNAL_VALUE);
   REL_TEST(cv, 725.57903095165773, REL_TOL_SAVED_VALUE);
   REL_TEST(_fp->cv_from_p_T(p, T), 725.57903095165773, REL_TOL_SAVED_VALUE);
+  DERIV_TEST(_fp->cv_from_v_e, v, e, REL_TOL_DERIVATIVE);
 
   // mu
   Real mu = _fp->mu_from_v_e(v, e);
@@ -79,6 +80,7 @@ TEST_F(AirSBTLFluidPropertiesTest, test)
   // TODO: REL_TEST(k, k_external, REL_TOL_EXTERNAL_VALUE);
   REL_TEST(k, 0.032989538356443394, REL_TOL_SAVED_VALUE);
   REL_TEST(_fp->k_from_p_T(p, T), 0.032989538356443394, REL_TOL_SAVED_VALUE);
+  DERIV_TEST(_fp->k_from_v_e, v, e, REL_TOL_DERIVATIVE);
   DERIV_TEST(_fp->k_from_p_T, p, T, REL_TOL_DERIVATIVE);
 
   // s
