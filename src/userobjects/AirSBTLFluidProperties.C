@@ -60,6 +60,8 @@ extern "C" void
 DIFF_S_VU_AIR(double v, double u, double & s, double & dsdv, double & dsdu, double & dudv);
 extern "C" void
 DIFF_W_VU_AIR(double v, double u, double & c, double & dcdv, double & dcdu, double & dudv);
+extern "C" void DIFF_LAMBDA_VU_AIR(
+    double v, double u, double & lambda, double & dlambdadv, double & dlambdadu, double & dudv);
 extern "C" void DIFF_LAMBDA_VU_AIR_T(double vt,
                                      double v,
                                      double u,
@@ -221,6 +223,14 @@ Real
 AirSBTLFluidProperties::k_from_v_e(Real v, Real e) const
 {
   return LAMBDA_VU_AIR(v, e * _to_kJ);
+}
+
+void
+AirSBTLFluidProperties::k_from_v_e(Real v, Real e, Real & k, Real & dk_dv, Real & dk_de) const
+{
+  double dedv;
+  DIFF_LAMBDA_VU_AIR(v, e * _to_kJ, k, dk_dv, dk_de, dedv);
+  dk_de *= 1 / _to_J;
 }
 
 Real
