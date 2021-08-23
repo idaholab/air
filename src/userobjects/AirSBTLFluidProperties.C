@@ -73,6 +73,8 @@ extern "C" void
 DIFF_U_VP_AIR(double v, double p, double & u, double & dudv_p, double & dudp_v, double & dpdv_u);
 extern "C" void DIFF_CP_VU_AIR_T(
     double vt, double v, double u, double & cp, double & dcpdv, double & dcpdu, double & dudv);
+extern "C" void DIFF_CV_VU_AIR_T(
+    double vt, double v, double u, double & cv, double & dcvdv, double & dcvdu, double & dudv);
 
 registerMooseObject("AirApp", AirSBTLFluidProperties);
 
@@ -202,6 +204,16 @@ Real
 AirSBTLFluidProperties::cv_from_v_e(Real v, Real e) const
 {
   return CV_VU_AIR(v, e * _to_kJ) * _to_J;
+}
+
+void
+AirSBTLFluidProperties::cv_from_v_e(Real v, Real e, Real & cv, Real & dcv_dv, Real & dcv_de) const
+{
+  double vt = std::log(v);
+  double de_dv_cv;
+  DIFF_CV_VU_AIR_T(vt, v, e * _to_kJ, cv, dcv_dv, dcv_de, de_dv_cv);
+  cv *= _to_J;
+  dcv_dv *= _to_J;
 }
 
 Real
