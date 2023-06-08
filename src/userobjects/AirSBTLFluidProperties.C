@@ -83,6 +83,9 @@ AirSBTLFluidProperties::validParams()
 {
   InputParameters params = SinglePhaseFluidProperties::validParams();
   params += NaNInterface::validParams();
+  params.addParam<Real>("e_min", -288786., "Return Nan if internal energy is less than e_min");
+  params.addParam<Real>("h_min", -87833., "Return Nan if specific enthalpy is less than h_min");
+  params.addParam<Real>("s_min", -2181., "Return Nan if specific entropy is less than s_min");
   params.addClassDescription("Fluid properties of air (gas phase).");
   return params;
 }
@@ -93,19 +96,31 @@ AirSBTLFluidProperties::AirSBTLFluidProperties(const InputParameters & parameter
     _to_MPa(1e-6),
     _to_Pa(1e6),
     _to_kJ(1e-3),
-    _to_J(1e3)
+    _to_J(1e3),
+    _e_min(getParam<Real>("e_min")),
+    _h_min(getParam<Real>("h_min")),
+    _s_min(getParam<Real>("s_min"))
 {
 }
 
 Real
 AirSBTLFluidProperties::p_from_v_e(Real v, Real e) const
 {
+  if (std::isnan(v) || std::isnan(e) || v < 0 || e < _e_min)
+    return getNaN();
   return P_VU_AIR(v, e * _to_kJ) * _to_Pa;
 }
 
 void
 AirSBTLFluidProperties::p_from_v_e(Real v, Real e, Real & p, Real & dp_dv, Real & dp_de) const
 {
+  if (std::isnan(v) || std::isnan(e) || v < 0 || e < _e_min)
+  {
+    p = getNaN();
+    dp_dv = getNaN();
+    dp_de = getNaN();
+    return;
+  }
   e *= _to_kJ;
 
   double de_dv_p;
@@ -119,12 +134,21 @@ AirSBTLFluidProperties::p_from_v_e(Real v, Real e, Real & p, Real & dp_dv, Real 
 Real
 AirSBTLFluidProperties::T_from_v_e(Real v, Real e) const
 {
+  if (std::isnan(v) || std::isnan(e) || v < 0 || e < _e_min)
+    return getNaN();
   return T_VU_AIR(v, e * _to_kJ);
 }
 
 void
 AirSBTLFluidProperties::T_from_v_e(Real v, Real e, Real & T, Real & dT_dv, Real & dT_de) const
 {
+  if (std::isnan(v) || std::isnan(e) || v < 0 || e < _e_min)
+  {
+    T = getNaN();
+    dT_dv = getNaN();
+    dT_de = getNaN();
+    return;
+  }
   e *= _to_kJ;
 
   double de_dv_T;
@@ -136,12 +160,21 @@ AirSBTLFluidProperties::T_from_v_e(Real v, Real e, Real & T, Real & dT_dv, Real 
 Real
 AirSBTLFluidProperties::c_from_v_e(Real v, Real e) const
 {
+  if (std::isnan(v) || std::isnan(e) || v < 0 || e < _e_min)
+    return getNaN();
   return W_VU_AIR(v, e * _to_kJ);
 }
 
 void
 AirSBTLFluidProperties::c_from_v_e(Real v, Real e, Real & c, Real & dc_dv, Real & dc_de) const
 {
+  if (std::isnan(v) || std::isnan(e) || v < 0 || e < _e_min)
+  {
+    c = getNaN();
+    dc_dv = getNaN();
+    dc_de = getNaN();
+    return;
+  }
   double de_dv_c;
   DIFF_W_VU_AIR(v, e * _to_kJ, c, dc_dv, dc_de, de_dv_c);
 
@@ -151,6 +184,8 @@ AirSBTLFluidProperties::c_from_v_e(Real v, Real e, Real & c, Real & dc_dv, Real 
 Real
 AirSBTLFluidProperties::e_from_v_h(Real v, Real h) const
 {
+  if (std::isnan(v) || std::isnan(h) || v < 0 || h < _h_min)
+    return getNaN();
   double e;
   const unsigned int ierr = FLASH_VH_AIR(v, h * _to_kJ, e);
   if (ierr != I_OK)
@@ -162,6 +197,13 @@ AirSBTLFluidProperties::e_from_v_h(Real v, Real h) const
 void
 AirSBTLFluidProperties::e_from_v_h(Real v, Real h, Real & e, Real & de_dv, Real & de_dh) const
 {
+  if (std::isnan(v) || std::isnan(h) || v < 0 || h < _h_min)
+  {
+    e = getNaN();
+    de_dv = getNaN();
+    de_dh = getNaN();
+    return;
+  }
   const unsigned int ierr = FLASH_VH_AIR(v, h * _to_kJ, e);
   if (ierr != I_OK)
   {
@@ -187,12 +229,21 @@ AirSBTLFluidProperties::e_from_v_h(Real v, Real h, Real & e, Real & de_dv, Real 
 Real
 AirSBTLFluidProperties::cp_from_v_e(Real v, Real e) const
 {
+  if (std::isnan(v) || std::isnan(e) || v < 0 || e < _e_min)
+    return getNaN();
   return CP_VU_AIR(v, e * _to_kJ) * _to_J;
 }
 
 void
 AirSBTLFluidProperties::cp_from_v_e(Real v, Real e, Real & cp, Real & dcp_dv, Real & dcp_de) const
 {
+  if (std::isnan(v) || std::isnan(e) || v < 0 || e < _e_min)
+  {
+    cp = getNaN();
+    dcp_dv = getNaN();
+    dcp_de = getNaN();
+    return;
+  }
   double vt = std::log(v);
   double de_dv_cp;
   DIFF_CP_VU_AIR_T(vt, v, e * _to_kJ, cp, dcp_dv, dcp_de, de_dv_cp);
@@ -203,12 +254,21 @@ AirSBTLFluidProperties::cp_from_v_e(Real v, Real e, Real & cp, Real & dcp_dv, Re
 Real
 AirSBTLFluidProperties::cv_from_v_e(Real v, Real e) const
 {
+  if (std::isnan(v) || std::isnan(e) || v < 0 || e < _e_min)
+    return getNaN();
   return CV_VU_AIR(v, e * _to_kJ) * _to_J;
 }
 
 void
 AirSBTLFluidProperties::cv_from_v_e(Real v, Real e, Real & cv, Real & dcv_dv, Real & dcv_de) const
 {
+  if (std::isnan(v) || std::isnan(e) || v < 0 || e < _e_min)
+  {
+    cv = getNaN();
+    dcv_dv = getNaN();
+    dcv_de = getNaN();
+    return;
+  }
   double vt = std::log(v);
   double de_dv_cv;
   DIFF_CV_VU_AIR_T(vt, v, e * _to_kJ, cv, dcv_dv, dcv_de, de_dv_cv);
@@ -219,12 +279,22 @@ AirSBTLFluidProperties::cv_from_v_e(Real v, Real e, Real & cv, Real & dcv_dv, Re
 Real
 AirSBTLFluidProperties::mu_from_v_e(Real v, Real e) const
 {
+  if (std::isnan(v) || std::isnan(e) || v < 0 || e < _e_min)
+    return getNaN();
   return ETA_VU_AIR(v, e * _to_kJ);
 }
 
 void
 AirSBTLFluidProperties::mu_from_v_e(Real v, Real e, Real & mu, Real & dmu_dv, Real & dmu_de) const
 {
+  if (std::isnan(v) || std::isnan(e) || v < 0 || e < _e_min)
+  {
+    mu = getNaN();
+    dmu_dv = getNaN();
+    dmu_de = getNaN();
+    return;
+  }
+
   mu = mu_from_v_e(v, e);
   // currently zero, becuase the underlying SBTL package has no API for it
   dmu_dv = 0;
@@ -234,12 +304,22 @@ AirSBTLFluidProperties::mu_from_v_e(Real v, Real e, Real & mu, Real & dmu_dv, Re
 Real
 AirSBTLFluidProperties::k_from_v_e(Real v, Real e) const
 {
+  if (std::isnan(v) || std::isnan(e) || v < 0 || e < _e_min)
+    return getNaN();
+
   return LAMBDA_VU_AIR(v, e * _to_kJ);
 }
 
 void
 AirSBTLFluidProperties::k_from_v_e(Real v, Real e, Real & k, Real & dk_dv, Real & dk_de) const
 {
+  if (std::isnan(v) || std::isnan(e) || v < 0 || e < _e_min)
+  {
+    k = getNaN();
+    dk_dv = getNaN();
+    dk_de = getNaN();
+    return;
+  }
   double dedv;
   DIFF_LAMBDA_VU_AIR(v, e * _to_kJ, k, dk_dv, dk_de, dedv);
   dk_de *= 1 / _to_J;
@@ -248,12 +328,23 @@ AirSBTLFluidProperties::k_from_v_e(Real v, Real e, Real & k, Real & dk_dv, Real 
 Real
 AirSBTLFluidProperties::s_from_v_e(Real v, Real e) const
 {
+  if (std::isnan(v) || std::isnan(e) || v < 0 || e < _e_min)
+    return getNaN();
+
   return S_VU_AIR(v, e * _to_kJ) * _to_J;
 }
 
 void
 AirSBTLFluidProperties::s_from_v_e(Real v, Real e, Real & s, Real & ds_dv, Real & ds_de) const
 {
+  if (std::isnan(v) || std::isnan(e) || v < 0 || e < _e_min)
+  {
+    s = getNaN();
+    ds_dv = getNaN();
+    ds_de = getNaN();
+    return;
+  }
+
   double de_dv_s;
   DIFF_S_VU_AIR(v, e * _to_kJ, s, ds_dv, ds_de, de_dv_s);
   s *= _to_J;
@@ -264,6 +355,9 @@ AirSBTLFluidProperties::s_from_v_e(Real v, Real e, Real & s, Real & ds_dv, Real 
 Real
 AirSBTLFluidProperties::s_from_h_p(Real h, Real p) const
 {
+  if (std::isnan(h) || std::isnan(p) || h < _h_min || p < 0)
+    return getNaN();
+
   double v, vt, e;
   const unsigned int ierr = PH_FLASH_AIR(p * _to_MPa, h * _to_kJ, v, vt, e);
   if (ierr != I_OK)
@@ -275,6 +369,13 @@ AirSBTLFluidProperties::s_from_h_p(Real h, Real p) const
 void
 AirSBTLFluidProperties::s_from_h_p(Real h, Real p, Real & s, Real & ds_dh, Real & ds_dp) const
 {
+  if (std::isnan(h) || std::isnan(p) || h < _h_min || p < 0)
+  {
+    s = getNaN();
+    ds_dh = getNaN();
+    ds_dp = getNaN();
+    return;
+  }
   double v, vt, e;
   const unsigned int ierr = PH_FLASH_AIR(p * _to_MPa, h * _to_kJ, v, vt, e);
   if (ierr != I_OK)
@@ -305,6 +406,8 @@ AirSBTLFluidProperties::s_from_h_p(Real h, Real p, Real & s, Real & ds_dh, Real 
 Real
 AirSBTLFluidProperties::beta_from_p_T(Real p, Real T) const
 {
+  if (std::isnan(p) || std::isnan(T) || p < 0 || T < 0)
+    return getNaN();
   double rho, drho_dp, drho_dT;
   rho_from_p_T(p, T, rho, drho_dp, drho_dT);
   return -drho_dT / rho;
@@ -314,6 +417,13 @@ void
 AirSBTLFluidProperties::beta_from_p_T(
     Real p, Real T, Real & beta, Real & dbeta_dp, Real & dbeta_dT) const
 {
+  if (std::isnan(p) || std::isnan(T) || p < 0 || T < 0)
+  {
+    beta = getNaN();
+    dbeta_dp = getNaN();
+    dbeta_dT = getNaN();
+    return;
+  }
   beta = beta_from_p_T(p, T);
   dbeta_dp = 0;
   dbeta_dT = 0;
@@ -322,6 +432,8 @@ AirSBTLFluidProperties::beta_from_p_T(
 Real
 AirSBTLFluidProperties::rho_from_p_T(Real p, Real T) const
 {
+  if (std::isnan(p) || std::isnan(T) || (T < 0) || (p < 0))
+    return getNaN();
   double v, vt, e;
   const unsigned int ierr = PT_FLASH_AIR(p * _to_MPa, T, v, vt, e);
   if (ierr != I_OK)
@@ -334,6 +446,13 @@ void
 AirSBTLFluidProperties::rho_from_p_T(
     Real p, Real T, Real & rho, Real & drho_dp, Real & drho_dT) const
 {
+  if (std::isnan(p) || std::isnan(T) || (T < 0) || (p < 0))
+  {
+    rho = getNaN();
+    drho_dp = getNaN();
+    drho_dT = getNaN();
+    return;
+  }
   double v, vt, dv_dp, dv_dT, dp_dT_v;
   double e, de_dp, de_dT, dp_dT_e;
   const unsigned int ierr =
@@ -356,6 +475,8 @@ AirSBTLFluidProperties::rho_from_p_T(
 Real
 AirSBTLFluidProperties::e_from_p_rho(Real p, Real rho) const
 {
+  if (std::isnan(p) || std::isnan(rho) || p < 0 || rho <= 0)
+    return getNaN();
   double v = 1. / rho;
   return U_VP_AIR(v, p * _to_MPa) * _to_J;
 }
@@ -363,6 +484,13 @@ AirSBTLFluidProperties::e_from_p_rho(Real p, Real rho) const
 void
 AirSBTLFluidProperties::e_from_p_rho(Real p, Real rho, Real & e, Real & de_dp, Real & de_drho) const
 {
+  if (std::isnan(p) || std::isnan(rho) || p < 0 || rho <= 0)
+  {
+    e = getNaN();
+    de_dp = getNaN();
+    de_drho = getNaN();
+    return;
+  }
   double de_dv, dp_dv_e;
   double v = 1. / rho;
   DIFF_U_VP_AIR(v, p * _to_MPa, e, de_dv, de_dp, dp_dv_e);
@@ -376,12 +504,21 @@ AirSBTLFluidProperties::e_from_p_rho(Real p, Real rho, Real & e, Real & de_dp, R
 Real
 AirSBTLFluidProperties::e_from_T_v(Real T, Real v) const
 {
+  if (std::isnan(T) || std::isnan(v) || T < 0 || v <= 0)
+    return getNaN();
   return U_VT_AIR(v, T) * _to_J;
 }
 
 void
 AirSBTLFluidProperties::e_from_T_v(Real T, Real v, Real & e, Real & de_dT, Real & de_dv) const
 {
+  if (std::isnan(T) || std::isnan(v) || T < 0 || v <= 0)
+  {
+    e = getNaN();
+    de_dT = getNaN();
+    de_dv = getNaN();
+    return;
+  }
   double TT, dT_dv_e, dT_de_v, de_dv_T;
 
   e = U_VT_AIR(v, T);
@@ -396,6 +533,8 @@ AirSBTLFluidProperties::e_from_T_v(Real T, Real v, Real & e, Real & de_dT, Real 
 Real
 AirSBTLFluidProperties::p_from_T_v(Real T, Real v) const
 {
+  if (std::isnan(T) || std::isnan(v) || T < 0 || v <= 0)
+    return getNaN();
   double e;
   e = U_VT_AIR(v, T);
   return P_VU_AIR(v, e) * _to_Pa;
@@ -404,6 +543,13 @@ AirSBTLFluidProperties::p_from_T_v(Real T, Real v) const
 void
 AirSBTLFluidProperties::p_from_T_v(Real T, Real v, Real & p, Real & dp_dT, Real & dp_dv) const
 {
+  if (std::isnan(T) || std::isnan(v) || T < 0 || v <= 0)
+  {
+    p = getNaN();
+    dp_dT = getNaN();
+    dp_dv = getNaN();
+    return;
+  }
   double e, dp_dv_e, dp_de_v, de_dv_p;
   double TT, dT_dv_e, dT_de_v, de_dv_T;
 
@@ -419,6 +565,8 @@ AirSBTLFluidProperties::p_from_T_v(Real T, Real v, Real & p, Real & dp_dT, Real 
 Real
 AirSBTLFluidProperties::h_from_T_v(Real T, Real v) const
 {
+  if (std::isnan(T) || std::isnan(v) || T < 0 || v <= 0)
+    return getNaN();
   double e, p;
   e = U_VT_AIR(v, T);
   p = P_VU_AIR(v, e);
@@ -428,6 +576,13 @@ AirSBTLFluidProperties::h_from_T_v(Real T, Real v) const
 void
 AirSBTLFluidProperties::h_from_T_v(Real T, Real v, Real & h, Real & dh_dT, Real & dh_dv) const
 {
+  if (std::isnan(T) || std::isnan(v) || T < 0 || v <= 0)
+  {
+    h = getNaN();
+    dh_dT = getNaN();
+    dh_dv = getNaN();
+    return;
+  }
   double e, dp_dv_e, dp_de_v, de_dv_p;
   double TT, dT_dv_e, dT_de_v, de_dv_T;
   double p, dp_dT, dp_dv, de_dT, de_dv;
@@ -452,6 +607,8 @@ AirSBTLFluidProperties::h_from_T_v(Real T, Real v, Real & h, Real & dh_dT, Real 
 Real
 AirSBTLFluidProperties::s_from_T_v(Real T, Real v) const
 {
+  if (std::isnan(T) || std::isnan(v) || T < 0 || v <= 0)
+    return getNaN();
   double e;
   e = U_VT_AIR(v, T);
   return S_VU_AIR(v, e) * _to_J;
@@ -460,6 +617,13 @@ AirSBTLFluidProperties::s_from_T_v(Real T, Real v) const
 void
 AirSBTLFluidProperties::s_from_T_v(Real T, Real v, Real & s, Real & ds_dT, Real & ds_dv) const
 {
+  if (std::isnan(T) || std::isnan(v) || T < 0 || v <= 0)
+  {
+    s = getNaN();
+    ds_dT = getNaN();
+    ds_dv = getNaN();
+    return;
+  }
   double e, ds_dv_e, ds_de_v, de_dv_s;
   double TT, dT_dv_e, dT_de_v, de_dv_T;
 
@@ -477,6 +641,8 @@ AirSBTLFluidProperties::s_from_T_v(Real T, Real v, Real & s, Real & ds_dT, Real 
 Real
 AirSBTLFluidProperties::cv_from_T_v(Real T, Real v) const
 {
+  if (std::isnan(T) || std::isnan(v) || T < 0 || v <= 0)
+    return getNaN();
   double e;
   e = U_VT_AIR(v, T);
   return CV_VU_AIR(v, e) * _to_J;
@@ -485,6 +651,8 @@ AirSBTLFluidProperties::cv_from_T_v(Real T, Real v) const
 Real
 AirSBTLFluidProperties::h_from_p_T(Real p, Real T) const
 {
+  if (std::isnan(p) || std::isnan(T) || T < 0 || p < 0)
+    return getNaN();
   double v, vt, e;
   const unsigned int ierr = PT_FLASH_AIR(p * _to_MPa, T, v, vt, e);
   if (ierr != I_OK)
@@ -496,6 +664,13 @@ AirSBTLFluidProperties::h_from_p_T(Real p, Real T) const
 void
 AirSBTLFluidProperties::h_from_p_T(Real p, Real T, Real & h, Real & dh_dp, Real & dh_dT) const
 {
+  if (std::isnan(p) || std::isnan(T) || T < 0 || p < 0)
+  {
+    h = getNaN();
+    dh_dp = getNaN();
+    dh_dT = getNaN();
+    return;
+  }
   double v, vt, dv_dp, dv_dT, dp_dT_v;
   double e, de_dp, de_dT, dp_dT_e;
   const unsigned int ierr =
