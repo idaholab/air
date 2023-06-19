@@ -96,6 +96,12 @@ protected:
   const Real _to_kJ;
   /// Conversion factor from kJ to J
   const Real _to_J;
+  /// Minimum internal energy
+  const Real _e_min;
+  /// Minimum specific enthalpy
+  const Real _h_min;
+  /// Minimum specific entropy
+  const Real _s_min;
 
 public:
   static InputParameters validParams();

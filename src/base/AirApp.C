@@ -47,5 +47,5 @@ AirApp::registerAll(Factory & f, ActionFactory & af, Syntax & s)
   Registry::registerObjectsTo(f, {"AirApp"});
   Registry::registerActionsTo(af, {"AirApp"});
 
-  ModulesApp::registerAll(f, af, s);
+  ModulesApp::registerAllObjects<AirApp>(f, af, s);
 }
