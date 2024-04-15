@@ -73,6 +73,7 @@ include/base/AirRevision.h
 include/AirRevision.h
 build
 .tags
+air.yaml
 
 # Allow output files in gold directories
 !**/gold/*.e
