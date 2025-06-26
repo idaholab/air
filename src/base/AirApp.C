@@ -27,7 +27,7 @@ AirApp::validParams()
 
 registerKnownLabel("AirApp");
 
-AirApp::AirApp(InputParameters parameters) : MooseApp(parameters)
+AirApp::AirApp(const InputParameters & parameters) : MooseApp(parameters)
 {
   AirApp::registerAll(_factory, _action_factory, _syntax);
 }
